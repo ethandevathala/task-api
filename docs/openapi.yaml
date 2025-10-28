@@ -4,7 +4,7 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:3000
-    description: Local development servers
+    description: Local development server
   - url: https://task-api-vkin.onrender.com
     description: Production server on render
 tags:
@@ -13,3 +13,5 @@ tags:
 paths:
   /tasks:
     $ref: paths/tasks.yaml
+  /tasks/{id}:
+    $ref: paths/tasks.yaml  # Reference to the new GET /tasks/:id endpoint

@@ -4,7 +4,7 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:3000
-    description: Local development servers
+    description: Local development server
   - url: https://task-api-vkin.onrender.com
     description: Production server on render
 tags:
@@ -13,52 +13,58 @@ tags:
 paths:
   /tasks:
     get:
-      summary: List all tasks
+      summary: Retrieve a single task by its ID
       tags:
         - Tasks
       parameters:
-        - name: completed
-          in: query
-          required: false
-          description: Filter tasks by completed status
-          schema:
-            type: boolean
-            example: true
-        - name: limit
-          in: query
-          required: false
-          description: Maximum number of tasks to return
+        - name: id
+          in: path
+          required: true
+          description: ID of the task to retrieve
           schema:
             type: integer
-            example: 10
       responses:
         '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Task'
-    post:
-      summary: Create a new task
-      tags:
-        - Tasks
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Task'
-      responses:
-        '201':
-          description: Tast created successfully
+          description: A single task retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+  /tasks/{id}:
+    get:
+      summary: Retrieve a single task by its ID
+      tags:
+        - Tasks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the task to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single task retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
 components:
   schemas:
     Task:
@@ -84,6 +90,12 @@ components:
           type: array
           items:
             type: string
+    NotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Task not found
   responses:
     BadRequest:
       description: Invalid input
